@@ -34,5 +34,6 @@ om_language.grid(row=2, column=0)
 bt_translate = tk.Button(root, text="Translate and Move Script to SD", command=lambda:translator.translate(current_file, target_language_short.get()))
 bt_translate.grid(row=2, column=1)
 
-open_file()
+#open_file()
+current_file = r"C:\Users\delta\Desktop\MalduinoUtils\test.txt"
 root.mainloop()

@@ -1,0 +1,3 @@
+GUI r
+DELAY 100
+STRING Test
