@@ -4,6 +4,7 @@ import threading
 
 
 class Executor():
+    _special_keys = ("CTRL", "GUI", "SHIFT", "ALT_LEFT", "ALT_RIGHT", "CAPSLOCK", "ENTER", "DELETE", "BACKSPACE", "ESC", "INSERT", "SPACE", "TAB", "DOWN", "LEFT", "RIGHT", "UP", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12")
     additional_delay = 0
     default_delay = 0
     default_char_delay = 0
@@ -46,31 +47,38 @@ class Executor():
         elif function.startswith("GUI"):
             keyboard.press_and_release(f"cmd+{argument}")
         else:
-            if not keyboard.is_modifier(function):
+            if not self._is_special_key(function):
                     return
 
-            executed_text = None
-            current_function = self._get_modifier_from_function(function)
+            text_to_execute = None
+            current_function = function
             current_argument = argument
-            while keyboard.is_modifier(current_function):
-                if executed_text is None:
-                    executed_text = function
+            while self._is_special_key(current_function):
+                if text_to_execute is None:
+                    text_to_execute = self._get_modifier_from_function(current_function)
                 else:
-                    executed_text += f"+{function}"
+                    text_to_execute += f"+{self._get_modifier_from_function(current_function)}"
 
                 current_function, current_argument = self._function_parser(current_argument)
-                current_function = self._get_modifier_from_function(current_function)
             
-
+            print("######", text_to_execute)
+            keyboard.press_and_release(text_to_execute)
 
         time.sleep(self.default_delay)
         time.sleep(self.additional_delay)
 
-    def _get_modifier_from_function(self, function):
-        if function == "HI":
-            return "HO"
+    def _is_special_key(self, key):
+        return key in self._special_keys
 
-        return function
+    def _get_modifier_from_function(self, function):
+        if function == "ALT_LEFT":
+            return "alt"
+        elif function == "ALT_RIGHT":
+            return "alt gr"
+        elif function == "DELETE":
+            return "del"
+
+        return function.lower()
 
     def _function_parser(self, line):
         splitted_line = line.split(" ")
