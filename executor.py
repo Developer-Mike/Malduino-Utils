@@ -6,7 +6,7 @@ import threading
 class Executor():
     _special_keys = {
         "CTRL" : None, 
-        "GUI" : None, 
+        "GUI" : "cmd", 
         "SHIFT" : None,
         "ALT_LEFT" : "alt",
         "ALT_RIGHT" : "alt gr",
@@ -60,25 +60,26 @@ class Executor():
             self.default_char_delay = int(argument) / 1000
         elif function.startswith("STRING"):
             keyboard.write(argument, delay=self.default_char_delay)
-        elif function.startswith("REPLAY"):
+        elif function.startswith("REPLAY") or function.startswith("REPEAT"):
             for _ in range(int(argument)):
                 self._execute_line(self.last_line)
-        elif function.startswith("GUI"):
-            keyboard.press_and_release(f"cmd+{argument}")
         else:
             if not self._is_special_key(function):
                     return
 
+            current_argument = line
+            is_special_key = True
             text_to_execute = None
-            current_function = function
-            current_argument = argument
-            while self._is_special_key(current_function):
+            while is_special_key:
+                current_function, current_argument = self._function_parser(current_argument)
+                is_special_key = self._is_special_key(current_function)
+
                 if text_to_execute is None:
                     text_to_execute = self._get_modifier_from_function(current_function)
                 else:
                     text_to_execute += f"+{self._get_modifier_from_function(current_function)}"
 
-                current_function, current_argument = self._function_parser(current_argument)
+                
             
             print("######", text_to_execute)
             keyboard.press_and_release(text_to_execute)
