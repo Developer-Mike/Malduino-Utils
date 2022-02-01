@@ -4,7 +4,26 @@ import threading
 
 
 class Executor():
-    _special_keys = ("CTRL", "GUI", "SHIFT", "ALT_LEFT", "ALT_RIGHT", "CAPSLOCK", "ENTER", "DELETE", "BACKSPACE", "ESC", "INSERT", "SPACE", "TAB", "DOWN", "LEFT", "RIGHT", "UP", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12")
+    _special_keys = {
+        "CTRL" : None, 
+        "GUI" : None, 
+        "SHIFT" : None,
+        "ALT_LEFT" : "alt",
+        "ALT_RIGHT" : "alt gr",
+        "CAPSLOCK" : None,
+        "ENTER" : None,
+        "DELETE" : "del",
+        "BACKSPACE" : None,
+        "ESC" : None,
+        "INSERT" : None,
+        "SPACE" : None,
+        "TAB" : None,
+        "DOWN" : None,
+        "LEFT" : None,
+        "RIGHT" : None,
+        "UP" : None,
+        "F1" : None, "F2" : None, "F3" : None, "F4" : None, "F5" : None, "F6" : None, "F7" : None, "F8" : None, "F9" : None, "F10" : None, "F11" : None, "F12" : None}
+
     additional_delay = 0
     default_delay = 0
     default_char_delay = 0
@@ -71,12 +90,8 @@ class Executor():
         return key in self._special_keys
 
     def _get_modifier_from_function(self, function):
-        if function == "ALT_LEFT":
-            return "alt"
-        elif function == "ALT_RIGHT":
-            return "alt gr"
-        elif function == "DELETE":
-            return "del"
+        if function in self._special_keys:
+            return self._special_keys[function].lower()
 
         return function.lower()
 
