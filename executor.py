@@ -76,7 +76,7 @@ class Executor():
 
                 if text_to_execute is None:
                     text_to_execute = self._get_modifier_from_function(current_function)
-                else:
+                elif is_special_key:
                     text_to_execute += f"+{self._get_modifier_from_function(current_function)}"
 
                 
@@ -91,7 +91,7 @@ class Executor():
         return key in self._special_keys
 
     def _get_modifier_from_function(self, function):
-        if function in self._special_keys:
+        if function in self._special_keys and self._special_keys[function] is not None:
             return self._special_keys[function].lower()
 
         return function.lower()
